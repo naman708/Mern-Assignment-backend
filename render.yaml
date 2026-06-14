@@ -1,0 +1,40 @@
+# Render Blueprint.
+#
+# NOTE: Render does NOT offer managed MySQL (only PostgreSQL + Key Value/Redis).
+# Provision MySQL on an external free tier (Aiven, Railway, Clever Cloud,
+# PlanetScale) and paste its connection string into DATABASE_URL below.
+services:
+  - type: web
+    name: mern-assignment-api
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: APP_URL
+        sync: false # set to the deployed Render URL, e.g. https://mern-assignment-api.onrender.com
+      - key: CLIENT_URL
+        sync: false # the deployed frontend origin
+      - key: DATABASE_URL
+        sync: false # external MySQL connection string
+      - key: DB_SSL
+        value: "true"
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: mern-assignment-cache
+          property: connectionString
+      - key: JWT_ACCESS_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: EMAIL_PROVIDER
+        value: ethereal
+
+  - type: keyvalue
+    name: mern-assignment-cache
+    plan: free
+    ipAllowList: [] # only reachable from within Render's network

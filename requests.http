@@ -1,0 +1,96 @@
+### MERN Assignment API — manual smoke test
+### Use with the VS Code "REST Client" extension. Run requests top-to-bottom.
+@baseUrl = http://localhost:5000
+
+### Health check
+GET {{baseUrl}}/api/health
+
+### Register (multipart). Attach an image file to test the upload, or omit it.
+# After this, check the server logs for the Ethereal email preview URL,
+# open it, and click the verification link (hits /api/auth/verify-email).
+POST {{baseUrl}}/api/auth/register
+Content-Type: multipart/form-data; boundary=----boundary
+
+------boundary
+Content-Disposition: form-data; name="name"
+
+Jane Doe
+------boundary
+Content-Disposition: form-data; name="email"
+
+jane@example.com
+------boundary
+Content-Disposition: form-data; name="password"
+
+Passw0rd123
+------boundary--
+
+### Verify email (paste the token from the email preview URL)
+GET {{baseUrl}}/api/auth/verify-email?token=PASTE_TOKEN_HERE
+
+### Login (save accessToken + refreshToken from the response)
+# @name login
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "jane@example.com",
+  "password": "Passw0rd123"
+}
+
+@accessToken = {{login.response.body.data.accessToken}}
+@refreshToken = {{login.response.body.data.refreshToken}}
+
+### List users — paginated + search
+GET {{baseUrl}}/api/users?page=1&limit=10&search=jane
+Authorization: Bearer {{accessToken}}
+
+### My profile
+GET {{baseUrl}}/api/users/me
+Authorization: Bearer {{accessToken}}
+
+### Update my profile
+PUT {{baseUrl}}/api/users/me
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "Jane D."
+}
+
+### Refresh tokens
+POST {{baseUrl}}/api/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+### Forgot password
+POST {{baseUrl}}/api/auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": "jane@example.com"
+}
+
+### Reset password (token from the reset email preview URL)
+POST {{baseUrl}}/api/auth/reset-password
+Content-Type: application/json
+
+{
+  "token": "PASTE_RESET_TOKEN_HERE",
+  "password": "NewPassw0rd123"
+}
+
+### Delete a user — ADMIN ONLY (expect 403 with a non-admin token)
+DELETE {{baseUrl}}/api/users/SOME_USER_UUID
+Authorization: Bearer {{accessToken}}
+
+### Logout (revokes the refresh token)
+POST {{baseUrl}}/api/auth/logout
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
