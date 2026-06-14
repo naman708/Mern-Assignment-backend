@@ -33,8 +33,8 @@ const nodeEnv = optional('NODE_ENV', 'development');
 export const env = {
   nodeEnv,
   isProd: nodeEnv === 'production',
-  port: number('PORT', 5000),
-  appUrl: optional('APP_URL', 'http://localhost:5000'),
+  port: number('PORT', 3000),
+  appUrl: optional('APP_URL', 'http://localhost:3000'),
   clientUrl: optional('CLIENT_URL', 'http://localhost:5173'),
 
   db: {

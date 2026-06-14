@@ -35,7 +35,7 @@ express-validator · nodemailer · helmet · cors · compression · express-rate
 npm install
 cp .env.example .env      # then edit values (DB creds at minimum)
 npm run seed:admin        # creates admin@example.com / Admin@12345 (verified admin)
-npm run dev               # starts on http://localhost:5000
+npm run dev               # starts on http://localhost:3000
 ```
 
 On boot the server connects to MySQL, syncs the schema, connects to Redis, and starts listening.

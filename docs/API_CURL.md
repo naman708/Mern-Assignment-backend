@@ -9,7 +9,7 @@ explanation of what it does.
 - **Bulk:** Paste several curl blocks into a `.txt` file and import the file the same way.
 
 ## Conventions
-- **Base URL:** `http://localhost:5000` (server `PORT=5000`, configurable via `.env` / `APP_URL`).
+- **Base URL:** `http://localhost:3000` (server `PORT=3000`, configurable via `.env` / `APP_URL`).
 - **Placeholders to replace:**
   - `ACCESS_TOKEN` — access token returned by login (sent as `Authorization: Bearer ...`, expires ~15 min).
   - `REFRESH_TOKEN` — refresh token returned by login (sent in JSON body, expires ~7 days).
@@ -24,7 +24,7 @@ explanation of what it does.
 
 ### 1. Register
 ```bash
-curl -X POST http://localhost:5000/api/auth/register \
+curl -X POST http://localhost:3000/api/auth/register \
   -F "name=Jane Doe" \
   -F "email=jane@example.com" \
   -F "password=Passw0rd123" \
@@ -36,13 +36,13 @@ Password must be ≥8 chars and contain a letter and a number. **Public, rate-li
 
 ### 2. Verify email
 ```bash
-curl -X GET "http://localhost:5000/api/auth/verify-email?token=EMAIL_TOKEN"
+curl -X GET "http://localhost:3000/api/auth/verify-email?token=EMAIL_TOKEN"
 ```
 Verifies a user's email address using the token from the verification email link. **Public.**
 
 ### 3. Login
 ```bash
-curl -X POST http://localhost:5000/api/auth/login \
+curl -X POST http://localhost:3000/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"jane@example.com","password":"Passw0rd123"}'
 ```
@@ -51,7 +51,7 @@ Authenticates the user and returns the `user` object plus `accessToken` and `ref
 
 ### 4. Refresh token
 ```bash
-curl -X POST http://localhost:5000/api/auth/refresh \
+curl -X POST http://localhost:3000/api/auth/refresh \
   -H "Content-Type: application/json" \
   -d '{"refreshToken":"REFRESH_TOKEN"}'
 ```
@@ -59,7 +59,7 @@ Exchanges a valid refresh token for a new access + refresh token pair (token rot
 
 ### 5. Logout
 ```bash
-curl -X POST http://localhost:5000/api/auth/logout \
+curl -X POST http://localhost:3000/api/auth/logout \
   -H "Content-Type: application/json" \
   -d '{"refreshToken":"REFRESH_TOKEN"}'
 ```
@@ -67,7 +67,7 @@ Invalidates the given refresh token (revoked in Redis) so it can no longer be us
 
 ### 6. Forgot password
 ```bash
-curl -X POST http://localhost:5000/api/auth/forgot-password \
+curl -X POST http://localhost:3000/api/auth/forgot-password \
   -H "Content-Type: application/json" \
   -d '{"email":"jane@example.com"}'
 ```
@@ -76,7 +76,7 @@ Sends a password-reset link to the email if it exists. Always returns a generic 
 
 ### 7. Reset password
 ```bash
-curl -X POST http://localhost:5000/api/auth/reset-password \
+curl -X POST http://localhost:3000/api/auth/reset-password \
   -H "Content-Type: application/json" \
   -d '{"token":"EMAIL_TOKEN","password":"NewPassw0rd123"}'
 ```
@@ -90,7 +90,7 @@ All user routes require `Authorization: Bearer ACCESS_TOKEN`.
 
 ### 8. List users
 ```bash
-curl -X GET "http://localhost:5000/api/users?page=1&limit=10&search=jane" \
+curl -X GET "http://localhost:3000/api/users?page=1&limit=10&search=jane" \
   -H "Authorization: Bearer ACCESS_TOKEN"
 ```
 Returns a paginated list of users with metadata. Query params are optional: `page` (default 1),
@@ -98,14 +98,14 @@ Returns a paginated list of users with metadata. Query params are optional: `pag
 
 ### 9. Get current user
 ```bash
-curl -X GET http://localhost:5000/api/users/me \
+curl -X GET http://localhost:3000/api/users/me \
   -H "Authorization: Bearer ACCESS_TOKEN"
 ```
 Returns the authenticated user's own profile. **Auth required.**
 
 ### 10. Update current user
 ```bash
-curl -X PUT http://localhost:5000/api/users/me \
+curl -X PUT http://localhost:3000/api/users/me \
   -H "Authorization: Bearer ACCESS_TOKEN" \
   -F "name=Jane Updated" \
   -F "profileImage=@/path/to/new-avatar.png"
@@ -115,14 +115,14 @@ Updates the authenticated user's name and/or profile image. Both fields optional
 
 ### 11. Get user by ID
 ```bash
-curl -X GET http://localhost:5000/api/users/USER_ID \
+curl -X GET http://localhost:3000/api/users/USER_ID \
   -H "Authorization: Bearer ACCESS_TOKEN"
 ```
 Returns the public profile of the user with the given UUID. **Auth required.**
 
 ### 12. Delete user
 ```bash
-curl -X DELETE http://localhost:5000/api/users/USER_ID \
+curl -X DELETE http://localhost:3000/api/users/USER_ID \
   -H "Authorization: Bearer ACCESS_TOKEN"
 ```
 Deletes a user account. **Admin role required** (non-admins get 403). You cannot delete your
@@ -134,13 +134,13 @@ own account via this endpoint (returns 400). **Auth required.**
 
 ### 13. Health check
 ```bash
-curl -X GET http://localhost:5000/api/health
+curl -X GET http://localhost:3000/api/health
 ```
 Liveness/readiness check. Returns `{ "success": true, "status": "ok" }`. **Public.**
 
 ### 14. API welcome
 ```bash
-curl -X GET http://localhost:5000/
+curl -X GET http://localhost:3000/
 ```
 Returns the API welcome message and docs pointer. **Public.**
 
